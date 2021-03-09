@@ -2,7 +2,7 @@
 
 using namespace std;
 
-int IsZero(double val)
+inline int IsZero(double val)
 {
   return abs(val) < FLT_EPSILON;
 }
@@ -27,8 +27,29 @@ int SolveSquare(double a, double b, double c, double* x1, double* x2)
 
 int SolveLin(double b, double c, double* x1)
 {
-  *x1 = -c / b;
-  return 1;
+  if (IsZero(b))
+  {
+    if (IsZero(c))
+    {
+      return 3;
+    }
+    else
+    {
+      return 0;
+    }
+  }
+  else
+  {
+    if (IsZero(c))
+    {
+      *x1 = 0;
+    }
+    else
+    {
+      *x1 = -c / b;
+    }
+    return 1;
+  }
 }
 
 int SolveEquasion(double a, double b, double c, double* x1, double* x2)
@@ -40,35 +61,11 @@ int SolveEquasion(double a, double b, double c, double* x1, double* x2)
   }
   if (IsZero(a))
   {
-    notZeros &= 0b011U;
-  }
-  if (IsZero(b))
-  {
-    notZeros &= 0b101U;
-  }
-  if (IsZero(c))
-  {
-    notZeros &= 0b110U;
-  }
-
-  switch (notZeros)
-  {
-  case 0b000U:
-    return 3;
-    break;
-  case 0b001U:
-    return 0;
-    break;
-  case 0b010U:
-    *x1 = 0;
-    return 1;
-    break;
-  case 0b011U:
     return SolveLin(b, c, x1);
-    break;
-  default:
+  }
+  else
+  {
     return SolveSquare(a, b, c, x1, x2);
-    break;
   }
 }
 
