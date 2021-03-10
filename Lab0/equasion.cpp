@@ -54,7 +54,6 @@ int SolveLin(double b, double c, double* x1)
 
 int SolveEquasion(double a, double b, double c, double* x1, double* x2)
 {
-  unsigned int notZeros = 0b111U;
   if (x1 == NULL || x2 == NULL)
   {
     return -1;
