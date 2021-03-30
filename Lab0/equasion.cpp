@@ -1,100 +1,119 @@
 #include <iostream>
 
 using namespace std;
+enum SqrEquasionAnsType
+{
+  ZERO,
+  ONE,
+  TWO,
+  ANY
+};
+
+using SqrEquasionCoeffs = struct
+{ 
+  double a; 
+  double b; 
+  double c; 
+};
+
+using SqrEquasionAns = struct
+{ 
+  double x[2];
+  SqrEquasionAnsType type;
+};
 
 inline int IsZero(double val)
 {
   return abs(val) < FLT_EPSILON;
 }
 
-int SolveSquare(double a, double b, double c, double* x1, double* x2)
+void SolveSquare(SqrEquasionCoeffs& coeffs, SqrEquasionAns& ans)
 {
-  double discr = b * b - 4 * a * c;
+  double discr = coeffs.b * coeffs.b - 4 * coeffs.a * coeffs.c;
   if (IsZero(discr))
   {
-    *x1 = -b / (2 * a);
-    return 1;
+    ans.x[0] = -coeffs.b / (2 * coeffs.a);
+    ans.type = SqrEquasionAnsType::ONE;
   }
-  if (discr  < 0)
+  else if (discr  < 0)
   {
-    return 0;
+    ans.type = SqrEquasionAnsType::ZERO;
   }
-  discr = sqrt(discr);
-  *x1 = (-b - discr) / (2 * a);
-  *x2 = (-b + discr) / (2 * a);
-  return 2;
+  else
+  {
+    discr = sqrt(discr);
+    ans.x[0] = (-coeffs.b - discr) / (2 * coeffs.a);
+    ans.x[1] = (-coeffs.b + discr) / (2 * coeffs.a);
+    ans.type = SqrEquasionAnsType::TWO;
+  }
 }
 
-int SolveLin(double b, double c, double* x1)
+void SolveLin(SqrEquasionCoeffs& coeffs, SqrEquasionAns& ans)
 {
-  if (IsZero(b))
+  if (IsZero(coeffs.b))
   {
-    if (IsZero(c))
+    if (IsZero(coeffs.c))
     {
-      return 3;
+      ans.type = SqrEquasionAnsType::ANY;
     }
     else
     {
-      return 0;
+      ans.type = SqrEquasionAnsType::ZERO;
     }
   }
   else
   {
-    if (IsZero(c))
+    if (IsZero(coeffs.c))
     {
-      *x1 = 0;
+      ans.x[0] = 0;
     }
     else
     {
-      *x1 = -c / b;
+      ans.x[0] = -coeffs.c / coeffs.b;
     }
-    return 1;
+    ans.type = SqrEquasionAnsType::ONE;
   }
 }
 
-int SolveEquasion(double a, double b, double c, double* x1, double* x2)
+SqrEquasionAnsType SolveEquasion(SqrEquasionCoeffs& coeffs, SqrEquasionAns& ans)
 {
-  if (x1 == NULL || x2 == NULL)
+  if (IsZero(coeffs.a))
   {
-    return -1;
-  }
-  if (IsZero(a))
-  {
-    return SolveLin(b, c, x1);
+    SolveLin(coeffs, ans);
   }
   else
   {
-    return SolveSquare(a, b, c, x1, x2);
+    SolveSquare(coeffs, ans);
   }
+  return ans.type;
 }
 
-int AskCoefs(double* a, double* b, double* c)
+void AskCoefs(SqrEquasionCoeffs& coeffs)
 {
   cout << "Solving a*x^2 + b*x + c = 0." << endl;
   cout << "Enter a:" << endl;
-  cin >> *a;
+  cin >> coeffs.a;
   cout << "Enter b:" << endl;
-  cin >> *b;
+  cin >> coeffs.b;
   cout << "Enter c:" << endl;
-  cin >> *c;
-  return 0;
+  cin >> coeffs.c;
 }
 
-void PrintAns(double x1, double x2, int ansCount)
+void PrintAns(SqrEquasionAns& ans)
 {
-  switch (ansCount)
+  switch (ans.type)
   {
-  case 0:
+  case ZERO:
     cout << "No solution." << endl;
     break;
-  case 1:
-    cout << "x = " << x1 << endl;
+  case ONE:
+    cout << "x = " << ans.x[0] << endl;
     break;
-  case 2:
-    cout << "x1 = " << x1 << endl;
-    cout << "x2 = " << x2 << endl;
+  case TWO:
+    cout << "x1 = " << ans.x[0] << endl;
+    cout << "x2 = " << ans.x[1] << endl;
     break;
-  case 3:
+  case ANY:
     cout << "Any solution." << endl;
     break;
   default:
@@ -105,10 +124,10 @@ void PrintAns(double x1, double x2, int ansCount)
 
 int main(void)
 {
-  double a, b, c, x1, x2;
-  int ansCount;
-  AskCoefs(&a, &b, &c);
-  ansCount = SolveEquasion(a, b, c, &x1, &x2);
-  PrintAns(x1, x2, ansCount);
+  SqrEquasionCoeffs coeffs;
+  SqrEquasionAns ans;
+  AskCoefs(coeffs);
+  SolveEquasion(coeffs, ans);
+  PrintAns(ans);
   return 0;
 }
