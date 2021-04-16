@@ -201,6 +201,10 @@ void Studient::DoSqrEqsnTask()
   while (!taskFile.eof())
   {
     ReadTaskCoeffs();
+    if (taskFile.fail())
+    {
+      break;
+    }
     TryToSolve();
     PrintAnswer();
   }
@@ -316,6 +320,10 @@ public:
     while (!answersFile.eof())
     {
       ReadTaskCoeffs();
+      if (answersFile.fail())
+      {
+        break;
+      }
       SolveEquasion(curCoeffs, curSolution);
       ReadStudSolution();
       answersFile >> name;
@@ -344,7 +352,16 @@ void MakeAllStudientsDoTasks()
   {
     string studName;
     string studType;
-    studFile >> studName >> studType;
+    studFile >> studName;
+    if (studFile.fail())
+    {
+      break;
+    }
+    studFile >> studType;
+    if (studFile.fail())
+    {
+      break;
+    }
     Studient* stud_p;
     ifstream taskFile = ifstream("task.txt");
     if (studType == "B")
