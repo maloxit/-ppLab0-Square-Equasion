@@ -139,7 +139,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="equasion.cpp" />
+    <ClCompile Include="EquationTaskSimulation.cpp" />
+    <ClCompile Include="EquationSolution.cpp" />
+    <ClCompile Include="EquationSolver.cpp" />
+    <ClCompile Include="Studients.cpp" />
+    <ClCompile Include="Teacher.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="EquationSolution.hpp" />
+    <ClInclude Include="EquationSolver.hpp" />
+    <ClInclude Include="Studients.hpp" />
+    <ClInclude Include="Teacher.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
